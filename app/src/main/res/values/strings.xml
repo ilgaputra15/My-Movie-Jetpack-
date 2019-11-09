@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">My Movie Jetpack</string>
+    <string name="text_home">Home</string>
+    <string name="text_title_movie">Movies</string>
+    <string name="text_title_tv_show">Tv Show</string>
+    <string name="text_overview">Overview</string>
+    <string name="text_language">Language</string>
+    <string name="text_budget">Budget</string>
+    <string name="text_revenue">Revenue</string>
+    <string name="text_vote">Vote</string>
+    <string name="text_popularity">Popularity</string>
+    <string name="text_created_by">Created By</string>
+    <string name="text_genres">Genres</string>
 </resources>
