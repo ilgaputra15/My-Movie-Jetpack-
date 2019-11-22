@@ -3,24 +3,30 @@ package com.gyosanila.mymoviejetpack.features.tvShowDetail
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.gyosanila.mymoviejetpack.R
+import com.gyosanila.mymoviejetpack.core.base.BaseActivity
 import com.gyosanila.mymoviejetpack.core.common.Constant
-import com.gyosanila.mymoviejetpack.data.model.TvShow
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.data.model.ResultResponse
+import com.gyosanila.mymoviejetpack.data.model.TvShowDetail
+import com.gyosanila.mymoviejetpack.data.model.TvShowItem
 import kotlinx.android.synthetic.main.activity_tv_show_detail.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class TvShowDetailActivity : AppCompatActivity() {
+class TvShowDetailActivity : BaseActivity() {
 
-    private lateinit var tvShowViewModel: TvShowViewModel
+    private val tvShowViewModel: TvShowViewModel by viewModel()
 
     companion object {
-        const val TV_SHOW_ID = "extra_tv_show_id"
-        fun generateIntent(context: Context, tvShowId: Int): Intent {
+        const val TV_SHOW = "extra_tv_show"
+        fun generateIntent(context: Context, tvShowId: TvShowItem): Intent {
             val intent = Intent(context, TvShowDetailActivity::class.java)
-            intent.putExtra(TV_SHOW_ID, tvShowId)
+            intent.putExtra(TV_SHOW, tvShowId)
             return intent
         }
     }
@@ -31,30 +37,49 @@ class TvShowDetailActivity : AppCompatActivity() {
         setup()
     }
 
+    override fun setToolbar(): Toolbar? = toolbar
 
-    fun setup() {
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationOnClickListener { onBackPressed() }
-        tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel::class.java)
-        val movieId = intent.getIntExtra(TV_SHOW_ID, 0)
-        if (movieId != 0) {
-            tvShowViewModel.seTvShowId(movieId)
-            showTvShowDetail(tvShowViewModel.getTvShowById()!!)
+
+    override fun setup() {
+//        tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel::class.java)
+        val tvShow = intent.getParcelableExtra<TvShowItem>(TV_SHOW)
+        if (tvShow != null) {
+            EspressoIdlingResource.increment()
+            tvShowViewModel.getMovieById(tvShow.id)?.observe(this, Observer { response(it) })
+        } else finish()
+    }
+
+    private fun response(result: ResultResponse) {
+        when (result) {
+            is ResultResponse.OnLoading -> {
+                if (result.isLoading) showDialog() else hideDialog()
+            }
+            is ResultResponse.Success<*> -> {
+                hideDialog()
+                when(result.data) {
+                    is TvShowDetail -> {
+                        showTvShowDetail(result.data)
+                    }
+                }
+            }
+            is ResultResponse.Error -> {
+                hideDialog()
+                connectionError(result.error)
+            }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    fun showTvShowDetail(tvShowDetail: TvShow) {
+    fun showTvShowDetail(tvShowDetail: TvShowDetail) {
+        EspressoIdlingResource.decrement()
         textTitle.text = tvShowDetail.name
         Glide.with(this)
             .load(Constant.ImageUrl+tvShowDetail.poster_path)
             .into(imageTvShow)
         textPublishAt.text = "(${tvShowDetail.first_air_date})"
-        textValueGenres.text = tvShowDetail.genre_ids.toString()
+        textValueGenres.text = tvShowDetail.genres.joinToString { it.name }
         textValueOverview.text = tvShowDetail.overview
-        textValueCreatedBy.text = tvShowDetail.origin_country.toString()
+        textValueCreatedBy.text = tvShowDetail.origin_country.joinToString { it }
         textValuePopularity.text = tvShowDetail.popularity.toString()
         textValueVoteAverage.text = tvShowDetail.vote_average.toString()
     }

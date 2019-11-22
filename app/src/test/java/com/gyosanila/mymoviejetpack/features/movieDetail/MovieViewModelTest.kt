@@ -1,10 +1,26 @@
 package com.gyosanila.mymoviejetpack.features.movieDetail
 
-import com.gyosanila.mymoviejetpack.data.model.Movie
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.gyosanila.mymoviejetpack.data.model.MovieDetail
+import com.gyosanila.mymoviejetpack.data.model.Movies
+import com.gyosanila.mymoviejetpack.data.model.ResultResponse
+import com.gyosanila.mymoviejetpack.data.repository.MovieRepository
+import com.gyosanila.mymoviejetpack.features.utils.JsonUtils
+import io.reactivex.Observable
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Before
-
-import org.junit.Assert.*
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import retrofit2.HttpException
+import retrofit2.Response
 
 /**
  * Created by ilgaputra15
@@ -12,44 +28,53 @@ import org.junit.Test
  * Division Mobile - PT.Homecareindo Global Medika
  */
 class MovieViewModelTest {
+    @Rule
+    @JvmField
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @Mock
+    lateinit var observer: Observer<ResultResponse>
+    @Mock
+    lateinit var movieRepository: MovieRepository
     lateinit var viewModel: MovieViewModel
-    lateinit var movieDummy: Movie
+    private val movieId = 330457
 
     @Before
-    fun setUp() {
-        viewModel = MovieViewModel()
-        movieDummy = Movie(
-            id = 290859,
-            title = "Terminator: Dark Fate",
-            poster_path = "/vqzNJRH4YyquRiWxCCOH0aXggHI.jpg",
-            original_language = "en",
-            original_title = "Terminator: Dark Fate",
-            vote_average =  6.6,
-            overview = "More than two decades have passed since Sarah Connor prevented Judgment Day, changed the future, and re-wrote the fate of the human race. Dani Ramos is living a simple life in Mexico City with her brother and father when a highly advanced and deadly new Terminator – a Rev-9 – travels back through time to hunt and kill her. Dani's survival depends on her joining forces with two warriors: Grace, an enhanced super-soldier from the future, and a battle-hardened Sarah Connor. As the Rev-9 ruthlessly destroys everything and everyone in its path on the hunt for Dani, the three are led to a T-800 from Sarah’s past that may be their last best hope.",
-            release_date = "2019-11-01"
-
-        )
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        viewModel = MovieViewModel(movieRepository)
     }
 
     @Test
-    fun setMovieId() {
-        viewModel.setMovieId(movieDummy.id)
-        assertNotNull(viewModel.movieId)
-        assertEquals(movieDummy.id, viewModel.movieId)
+    fun getMovie() {
+        val responseString = JsonUtils.getJson("json/movie/movie_detail.json")
+        val responseType = object : TypeToken<MovieDetail>() {}.type
+        val dummyData: MovieDetail = Gson().fromJson(responseString, responseType)
+        val response = MutableLiveData<ResultResponse>()
+        response.value = ResultResponse.Success(dummyData)
+        Mockito.`when`(movieRepository.getMovieDetail(movieId)).thenReturn(Observable.just(dummyData))
+        viewModel.getMovieById(movieId)?.observeForever(observer)
+        Mockito.verify(observer).onChanged(Mockito.refEq(response.value))
     }
 
     @Test
-    fun getMovieById() {
-        viewModel.movieId = movieDummy.id
-        val movie = viewModel.getMovieById()
-        assertNotNull(movie)
-        assertEquals(movieDummy.id, movie?.id)
-        assertEquals(movieDummy.title, movie?.title)
-        assertEquals(movieDummy.overview, movie?.overview)
-        assertEquals(movieDummy.original_language, movie?.original_language)
-        assertEquals(movieDummy.original_title, movie?.original_title)
-        assertEquals(movieDummy.vote_average, movie?.vote_average)
-        assertEquals(movieDummy.release_date, movie?.release_date)
+    fun getMovieLoading() {
+        val response = MutableLiveData<ResultResponse>()
+        response.value = ResultResponse.OnLoading(true)
+        Mockito.`when`(movieRepository.getMovieDetail(movieId)).thenReturn(Observable.empty())
+        viewModel.getMovieById(movieId)?.observeForever(observer)
+        Mockito.verify(observer).onChanged(Mockito.refEq(response.value))
+    }
+
+    @Test
+    fun getMovieError() {
+        val errorResponseBody = ResponseBody.create(MediaType.parse("application/json"), "")
+        val errorResponse = Response.error<Movies>(404, errorResponseBody)
+        val exception = HttpException( errorResponse )
+        val response = MutableLiveData<ResultResponse>()
+        response.value = ResultResponse.Error(exception)
+        Mockito.`when`(movieRepository.getMovieDetail(movieId)).thenReturn(Observable.error(exception))
+        viewModel.getMovieById(movieId)?.observeForever(observer)
+        Mockito.verify(observer).onChanged(Mockito.refEq(response.value))
     }
 
 

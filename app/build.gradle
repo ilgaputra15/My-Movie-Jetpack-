@@ -45,6 +45,14 @@ dependencies {
     implementation "com.google.android.material:material:$materialVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
 
+    // Dependencies Network
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2Vesion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit2Vesion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit2Vesion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+
     // Dependencies for Architecture Component
     implementation "androidx.room:room-runtime:$roomVersion"
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
@@ -83,4 +91,7 @@ dependencies {
 
     // Dependencies for Idle Resource
     implementation "androidx.test.espresso:espresso-idling-resource:$idleResourceVersion"
+
+    implementation "org.koin:koin-android:$koinVersion"
+    implementation "org.koin:koin-android-viewmodel:$koinVersion"
 }

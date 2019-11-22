@@ -3,25 +3,30 @@ package com.gyosanila.mymoviejetpack.features.movieDetail
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.gyosanila.mymoviejetpack.R
+import com.gyosanila.mymoviejetpack.core.base.BaseActivity
 import com.gyosanila.mymoviejetpack.core.common.Constant
-import com.gyosanila.mymoviejetpack.data.model.Movie
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.data.model.MovieDetail
+import com.gyosanila.mymoviejetpack.data.model.MovieItem
+import com.gyosanila.mymoviejetpack.data.model.ResultResponse
 import kotlinx.android.synthetic.main.activity_movie_detail.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailActivity : BaseActivity() {
 
-    private lateinit var movieViewModel: MovieViewModel
+    private val movieViewModel: MovieViewModel by viewModel()
 
     companion object {
-        const val MOVIE_ID = "extra_movie_id"
-        fun generateIntent(context: Context, movieId: Int): Intent {
+        const val MOVIE = "extra_movie"
+        fun generateIntent(context: Context, movieDetail: MovieItem): Intent {
             val intent = Intent(context, MovieDetailActivity::class.java)
-            intent.putExtra(MOVIE_ID, movieId)
+            intent.putExtra(MOVIE, movieDetail)
             return intent
         }
     }
@@ -32,21 +37,19 @@ class MovieDetailActivity : AppCompatActivity() {
         setupUI()
     }
 
+    override fun setToolbar(): Toolbar? = toolbar
+
     private fun setupUI() {
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationOnClickListener { onBackPressed() }
-        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel::class.java)
-        val movieId = intent.getIntExtra(MOVIE_ID, 0)
-        if (movieId != 0) {
-            movieViewModel.setMovieId(movieId)
-            showMovieDetail(movieViewModel.getMovieById()!!)
+        val movie = intent.getParcelableExtra<MovieItem>(MOVIE)
+        if (movie == null) finish() else {
+            EspressoIdlingResource.increment()
+            movieViewModel.getMovieById(movie.id)?.observe(this, Observer { response(it) })
         }
     }
 
     @SuppressLint("SetTextI18n")
-    fun showMovieDetail(movieDetail: Movie) {
+    fun showMovieDetail(movieDetail: MovieDetail) {
+        EspressoIdlingResource.decrement()
         textTitle.text = movieDetail.title
         Glide.with(this)
             .load(Constant.ImageUrl+movieDetail.poster_path)
@@ -55,5 +58,25 @@ class MovieDetailActivity : AppCompatActivity() {
         textValueLanguage.text = movieDetail.original_language
         textValueOverview.text = movieDetail.overview
         textValueVoteAverage.text = movieDetail.vote_average.toString()
+    }
+
+    private fun response(result: ResultResponse) {
+        when (result) {
+            is ResultResponse.OnLoading -> {
+                if (result.isLoading) showDialog() else hideDialog()
+            }
+            is ResultResponse.Success<*> -> {
+                hideDialog()
+                when(result.data) {
+                    is MovieDetail -> {
+                        showMovieDetail(result.data)
+                    }
+                }
+            }
+            is ResultResponse.Error -> {
+                hideDialog()
+                connectionError(result.error)
+            }
+        }
     }
 }

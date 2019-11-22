@@ -1,0 +1,107 @@
+{
+  "backdrop_path": "/o7qi2v4uWQ8bZ1tW3KI0Ztn2epk.jpg",
+  "created_by": [
+    {
+      "id": 15277,
+      "credit_id": "5bb6f5c39251410dc601d77f",
+      "name": "Jon Favreau",
+      "gender": 2,
+      "profile_path": "/rOVBKURoR7TrG8MYxTuNUFj3E68.jpg"
+    }
+  ],
+  "episode_run_time": [
+    40
+  ],
+  "first_air_date": "2019-11-12",
+  "genres": [
+    {
+      "id": 10765,
+      "name": "Sci-Fi & Fantasy"
+    },
+    {
+      "id": 10759,
+      "name": "Action & Adventure"
+    }
+  ],
+  "homepage": "https://disneyplusoriginals.disney.com/show/the-mandalorian",
+  "id": 82856,
+  "in_production": true,
+  "languages": [
+    "en"
+  ],
+  "last_air_date": "2019-11-15",
+  "last_episode_to_air": {
+    "air_date": "2019-11-15",
+    "episode_number": 2,
+    "id": 1857024,
+    "name": "Chapter 2: The Child",
+    "overview": "Target in-hand, the Mandalorian must now contend with scavengers.",
+    "production_code": "",
+    "season_number": 1,
+    "show_id": 82856,
+    "still_path": "/kOpbxaH4nt5H1fArQQ1IzG9NzBw.jpg",
+    "vote_average": 8.0,
+    "vote_count": 3
+  },
+  "name": "The Mandalorian",
+  "next_episode_to_air": {
+    "air_date": "2019-11-22",
+    "episode_number": 3,
+    "id": 1980403,
+    "name": "Chapter 3",
+    "overview": "The battered Mandalorian returns to his client for reward.",
+    "production_code": "",
+    "season_number": 1,
+    "show_id": 82856,
+    "still_path": null,
+    "vote_average": 0.0,
+    "vote_count": 0
+  },
+  "networks": [
+    {
+      "name": "Disney+",
+      "id": 2739,
+      "logo_path": "/gJ8VX6JSu3ciXHuC2dDGAo2lvwM.png",
+      "origin_country": "US"
+    }
+  ],
+  "number_of_episodes": 8,
+  "number_of_seasons": 1,
+  "origin_country": [
+    "US"
+  ],
+  "original_language": "en",
+  "original_name": "The Mandalorian",
+  "overview": "Set after the fall of the Empire and before the emergence of the First Order, we follow the travails of a lone gunfighter in the outer reaches of the galaxy far from the authority of the New Republic.",
+  "popularity": 626.935,
+  "poster_path": "/BbNvKCuEF4SRzFXR16aK6ISFtR.jpg",
+  "production_companies": [
+    {
+      "id": 1,
+      "logo_path": "/o86DbpburjxrqAzEDhXZcyE8pDb.png",
+      "name": "Lucasfilm",
+      "origin_country": "US"
+    },
+    {
+      "id": 109755,
+      "logo_path": "/hUCbTgfDPp1sIo8BOI0AaOMx1Si.png",
+      "name": "Walt Disney Studios",
+      "origin_country": "US"
+    }
+  ],
+  "seasons": [
+    {
+      "air_date": "2019-11-12",
+      "episode_count": 8,
+      "id": 110346,
+      "name": "Season 1",
+      "overview": "",
+      "poster_path": "/sUTqIb82LxYhPT0SfI8AR03GLpz.jpg",
+      "season_number": 1
+    }
+  ],
+  "status": "Returning Series",
+  "type": "Scripted",
+  "vote_average": 7.8,
+  "vote_count": 79
+}

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.common.Constant
-import com.gyosanila.mymoviejetpack.data.model.Movie
+import com.gyosanila.mymoviejetpack.data.model.MovieItem
 import kotlinx.android.synthetic.main.item_movie.view.*
 
 
@@ -16,12 +16,12 @@ import kotlinx.android.synthetic.main.item_movie.view.*
  * on Sunday, 23/06/2019 23:12
  * Division Mobile - PT.Homecareindo Global Medika
  **/
-class MovieAdapter(private val clickListener: (Movie) -> Unit)
+class MovieAdapter(private val clickListener: (MovieItem) -> Unit)
     : RecyclerView.Adapter<MovieAdapter.MovieHolder>() {
 
-    private var listMovie: MutableList<Movie> = ArrayList()
+    private var listMovie: List<MovieItem> = ArrayList()
 
-    fun setListMovie(arrayList: MutableList<Movie>) {
+    fun setListMovie(arrayList: List<MovieItem>) {
         listMovie = arrayList
         notifyDataSetChanged()
     }
@@ -43,7 +43,7 @@ class MovieAdapter(private val clickListener: (Movie) -> Unit)
     }
 
     class MovieHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(part: Movie) {
+        fun bind(part: MovieItem) {
             itemView.textTitle.text = part.title
             itemView.textDescription.text = part.overview
             Glide.with(itemView).load(Constant.ImageUrl+part.poster_path).into(itemView.imageMovie)
