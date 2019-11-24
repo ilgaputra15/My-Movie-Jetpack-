@@ -4,14 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gyosanila.mymoviejetpack.R
-import com.gyosanila.mymoviejetpack.data.model.TvShow
+import com.gyosanila.mymoviejetpack.core.base.BaseFragment
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.data.model.ResultResponse
+import com.gyosanila.mymoviejetpack.data.model.TvShowItem
+import com.gyosanila.mymoviejetpack.data.model.TvShows
 import com.gyosanila.mymoviejetpack.features.adapter.TvShowAdapter
 import com.gyosanila.mymoviejetpack.features.tvShowDetail.TvShowDetailActivity
 import kotlinx.android.synthetic.main.fragment_tv_show.*
+import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * Created by ilgaputra15
@@ -19,10 +25,10 @@ import kotlinx.android.synthetic.main.fragment_tv_show.*
  * Division Mobile - PT.Homecareindo Global Medika
  **/
 
-class FragmentTvShow : Fragment() {
+class FragmentTvShow : BaseFragment() {
 
-    private lateinit var viewModel: FragmentTvShowViewModel
-    private lateinit var listTvShow: ArrayList<TvShow>
+    private val viewModel: FragmentTvShowViewModel by viewModel()
+    private lateinit var tvShowAdapter: TvShowAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,16 +44,36 @@ class FragmentTvShow : Fragment() {
     }
 
     private fun setupUI() {
-        val tvShowAdapter = TvShowAdapter { itemSelected: TvShow -> listTvShowClicked(itemSelected) }
+        tvShowAdapter = TvShowAdapter { itemSelected: TvShowItem -> listTvShowClicked(itemSelected) }
         recyclerViewTvShow.layoutManager = GridLayoutManager(activity, 2)
         recyclerViewTvShow.adapter = tvShowAdapter
-        viewModel = ViewModelProviders.of(this).get(FragmentTvShowViewModel::class.java)
-        listTvShow = viewModel.getTvShows()
-        tvShowAdapter.setListTvShow(listTvShow)
+        EspressoIdlingResource.increment()
+        viewModel.getTvShows()?.observe(this, Observer { response(it) })
     }
 
-    private fun listTvShowClicked(itemSelected: TvShow) {
-        val toMovieDetail = TvShowDetailActivity.generateIntent(requireContext(), itemSelected.id)
+    private fun response(result: ResultResponse) {
+        when (result) {
+            is ResultResponse.OnLoading -> {
+                if (result.isLoading) showDialog() else hideDialog()
+            }
+            is ResultResponse.Success<*> -> {
+                hideDialog()
+                when(result.data) {
+                    is TvShows -> {
+                        EspressoIdlingResource.decrement()
+                        tvShowAdapter.setListTvShow(result.data.results)
+                    }
+                }
+            }
+            is ResultResponse.Error -> {
+                hideDialog()
+                connectionError(result.error)
+            }
+        }
+    }
+
+    private fun listTvShowClicked(itemSelected: TvShowItem) {
+        val toMovieDetail = TvShowDetailActivity.generateIntent(requireContext(), itemSelected)
         startActivity(toMovieDetail)
     }
 }

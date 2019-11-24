@@ -1,8 +1,10 @@
 package com.gyosanila.mymoviejetpack.features.fragmentMovie
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gyosanila.mymoviejetpack.data.model.Movie
+import com.gyosanila.mymoviejetpack.data.model.ResultResponse
 import com.gyosanila.mymoviejetpack.data.repository.MovieRepository
+import io.reactivex.disposables.Disposable
 
 /**
  * Created by ilgaputra15
@@ -10,9 +12,21 @@ import com.gyosanila.mymoviejetpack.data.repository.MovieRepository
  * Division Mobile - PT.Homecareindo Global Medika
  **/
 
-class FragmentMovieViewModel : ViewModel() {
-    fun getMovies(): ArrayList<Movie> {
-        val repository = MovieRepository()
-        return repository.getMoviesDummy()
+class FragmentMovieViewModel(private val movieRepository: MovieRepository) : ViewModel() {
+
+    private var subscriber: Disposable? = null
+    private var response: MutableLiveData<ResultResponse>? = null
+
+    fun getListMovie(): MutableLiveData<ResultResponse>? {
+        if (response == null) {
+            response = MutableLiveData()
+            response?.postValue(ResultResponse.OnLoading(true))
+            subscriber = movieRepository.getMovieList()
+                .subscribe(
+                    { response?.postValue(ResultResponse.Success(it)) },
+                    { response?.postValue(ResultResponse.Error(it)) }
+                )
+        }
+        return response
     }
 }

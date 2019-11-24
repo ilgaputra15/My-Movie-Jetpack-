@@ -11,4 +11,5 @@
     <string name="text_popularity">Popularity</string>
     <string name="text_created_by">Created By</string>
     <string name="text_genres">Genres</string>
+    <string name="text_please_wait">Harap tunggu…</string>
 </resources>

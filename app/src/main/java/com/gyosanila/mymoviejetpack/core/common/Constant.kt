@@ -8,6 +8,8 @@ package com.gyosanila.mymoviejetpack.core.common
 
 class Constant {
     companion object {
+        const val MovieAPIUrl = "https://api.themoviedb.org/"
+        const val MovieAPIKey = "73d8eee11b083274d329f6177bb8f343"
         const val ImageUrl = "https://image.tmdb.org/t/p/w500/"
     }
 }
