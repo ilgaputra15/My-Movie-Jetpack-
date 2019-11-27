@@ -6,6 +6,8 @@ import com.gyosanila.mymoviejetpack.data.remote.MovieServices
 import com.gyosanila.mymoviejetpack.data.remote.TvShowServices
 import com.gyosanila.mymoviejetpack.data.repository.MovieRepository
 import com.gyosanila.mymoviejetpack.data.repository.TvShowRepository
+import com.gyosanila.mymoviejetpack.features.fragmentFavoriteMovies.FragmentFavoriteMoviesViewModel
+import com.gyosanila.mymoviejetpack.features.fragmentFavoriteTvShows.FragmentFavoriteTvShowsViewModel
 import com.gyosanila.mymoviejetpack.features.fragmentMovie.FragmentMovieViewModel
 import com.gyosanila.mymoviejetpack.features.fragmentTvShow.FragmentTvShowViewModel
 import com.gyosanila.mymoviejetpack.features.movieDetail.MovieViewModel
@@ -35,6 +37,8 @@ val dataSourceModule = module {
 val viewModelModule = module {
     viewModel { FragmentMovieViewModel(get()) }
     viewModel { FragmentTvShowViewModel(get()) }
+    viewModel { FragmentFavoriteMoviesViewModel(get()) }
+    viewModel { FragmentFavoriteTvShowsViewModel(get()) }
     viewModel { MovieViewModel(get()) }
     viewModel { TvShowViewModel(get()) }
 }

@@ -36,4 +36,8 @@ class MovieRepository(private val movieApi: MovieServices, private val myMovieDa
     suspend fun deleteFavorite(movieId: Int) {
         myMovieDao.deleteMovieById(movieId)
     }
+
+    fun getFavoriteMovies(): LiveData<List<MovieItem>> {
+        return myMovieDao.getMoviesFavorites()
+    }
 }

@@ -13,4 +13,5 @@
     <string name="text_genres">Genres</string>
     <string name="text_please_wait">Harap tunggu…</string>
     <string name="text_favorite">Favorites</string>
+    <string name="text_no_favorites">No Favorite Items</string>
 </resources>

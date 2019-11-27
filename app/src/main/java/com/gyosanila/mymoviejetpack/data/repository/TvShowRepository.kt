@@ -36,4 +36,8 @@ class TvShowRepository(private val tvShowApi: TvShowServices, private val myMovi
     suspend fun deleteFavorite(tvShowId: Int) {
         myMovieDao.deleteTvShowById(tvShowId)
     }
+
+    fun getFavoriteTvShows(): LiveData<List<TvShowItem>> {
+        return myMovieDao.getTvShowFavorites()
+    }
 }

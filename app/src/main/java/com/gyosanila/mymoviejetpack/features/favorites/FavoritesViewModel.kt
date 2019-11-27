@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.data.model.Pager
-import com.gyosanila.mymoviejetpack.features.fragmentMovie.FragmentMovie
-import com.gyosanila.mymoviejetpack.features.fragmentTvShow.FragmentTvShow
+import com.gyosanila.mymoviejetpack.features.fragmentFavoriteMovies.FragmentFavoriteMovies
+import com.gyosanila.mymoviejetpack.features.fragmentFavoriteTvShows.FragmentFavoriteTvShows
 
 /**
  * Created by ilgaputra15
@@ -21,8 +21,8 @@ class FavoritesViewModel: ViewModel() {
         if (data == null) {
             data = MutableLiveData()
             val pager = ArrayList<Pager>()
-            pager.add(Pager(context.getString(R.string.text_title_movie), FragmentMovie()))
-            pager.add(Pager(context.getString(R.string.text_title_tv_show), FragmentTvShow()))
+            pager.add(Pager(context.getString(R.string.text_title_movie), FragmentFavoriteMovies()))
+            pager.add(Pager(context.getString(R.string.text_title_tv_show), FragmentFavoriteTvShows()))
             data?.postValue(pager)
         }
         return data
