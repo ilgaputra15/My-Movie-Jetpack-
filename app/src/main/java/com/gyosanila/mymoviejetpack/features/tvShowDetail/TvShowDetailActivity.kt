@@ -4,9 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseActivity
@@ -21,6 +22,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class TvShowDetailActivity : BaseActivity() {
 
     private val tvShowViewModel: TvShowViewModel by viewModel()
+    private var tvShowItem: TvShowItem? = null
+    private lateinit var menu: Menu
+    private var isFavorite: Boolean = false
 
     companion object {
         const val TV_SHOW = "extra_tv_show"
@@ -39,13 +43,51 @@ class TvShowDetailActivity : BaseActivity() {
 
     override fun setToolbar(): Toolbar? = toolbar
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu
+        menuInflater.inflate(R.menu.toolbar_detail, menu)
+        setIconFavorite(isFavorite)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_add_favorite -> {
+                if (isFavorite) {
+                    tvShowItem?.id?.let {
+                        tvShowViewModel.deleteFavorite(it)
+                        setIconFavorite(false)
+                    }
+                } else {
+                    tvShowItem?.let {
+                        tvShowViewModel.saveFavorite(it)
+                        setIconFavorite(true)
+                    }
+                }
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setIconFavorite(isFavorite: Boolean) {
+        this.isFavorite = isFavorite
+        val icon = if (isFavorite) getDrawable(R.drawable.ic_favorite_active)
+        else getDrawable(R.drawable.ic_favorite)
+        if (::menu.isInitialized) menu.getItem(0).icon = icon
+    }
+
+    private fun setFavorite(listMovie: TvShowItem?) {
+        setIconFavorite(listMovie != null)
+    }
+
 
     override fun setup() {
-//        tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel::class.java)
-        val tvShow = intent.getParcelableExtra<TvShowItem>(TV_SHOW)
-        if (tvShow != null) {
+        tvShowItem = intent.getParcelableExtra(TV_SHOW)
+        if (tvShowItem != null) {
             EspressoIdlingResource.increment()
-            tvShowViewModel.getMovieById(tvShow.id)?.observe(this, Observer { response(it) })
+            tvShowViewModel.getMovieById(tvShowItem?.id ?: 0)?.observe(this, Observer { response(it) })
+            tvShowViewModel.getFavoriteStatus(tvShowItem!!).observe(this, Observer { setFavorite(it) })
         } else finish()
     }
 

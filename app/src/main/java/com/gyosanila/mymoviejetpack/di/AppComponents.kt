@@ -1,6 +1,7 @@
 package com.gyosanila.mymoviejetpack.di
 
 import com.gyosanila.mymoviejetpack.core.services.RetrofitService
+import com.gyosanila.mymoviejetpack.data.local.MyMovieRoomDatabase
 import com.gyosanila.mymoviejetpack.data.remote.MovieServices
 import com.gyosanila.mymoviejetpack.data.remote.TvShowServices
 import com.gyosanila.mymoviejetpack.data.repository.MovieRepository
@@ -9,6 +10,7 @@ import com.gyosanila.mymoviejetpack.features.fragmentMovie.FragmentMovieViewMode
 import com.gyosanila.mymoviejetpack.features.fragmentTvShow.FragmentTvShowViewModel
 import com.gyosanila.mymoviejetpack.features.movieDetail.MovieViewModel
 import com.gyosanila.mymoviejetpack.features.tvShowDetail.TvShowViewModel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -20,13 +22,14 @@ import org.koin.dsl.module
  **/
 
 val networkModule = module {
-    single {  RetrofitService.movieAPI<MovieServices>() }
-    single {  RetrofitService.movieAPI<TvShowServices>() }
+    single { RetrofitService.movieAPI<MovieServices>() }
+    single { RetrofitService.movieAPI<TvShowServices>() }
+    single { MyMovieRoomDatabase.getDatabase(androidApplication()).movieDao() }
 }
 
 val dataSourceModule = module {
-    single { TvShowRepository(get()) }
-    single { MovieRepository(get()) }
+    single { TvShowRepository(get(), get()) }
+    single { MovieRepository(get(), get()) }
 }
 
 val viewModelModule = module {
