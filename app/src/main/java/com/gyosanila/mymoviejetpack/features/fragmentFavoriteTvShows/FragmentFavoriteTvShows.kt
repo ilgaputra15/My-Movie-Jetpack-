@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseFragment
 import com.gyosanila.mymoviejetpack.core.extension.visible
 import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
 import com.gyosanila.mymoviejetpack.data.model.TvShowItem
-import com.gyosanila.mymoviejetpack.features.adapter.TvShowAdapter
+import com.gyosanila.mymoviejetpack.features.adapter.FavoriteTvShowsAdapter
 import com.gyosanila.mymoviejetpack.features.tvShowDetail.TvShowDetailActivity
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -25,7 +26,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class FragmentFavoriteTvShows : BaseFragment() {
 
     private val viewModel: FragmentFavoriteTvShowsViewModel by viewModel()
-    private lateinit var tvShowAdapter: TvShowAdapter
+    private lateinit var tvShowAdapter: FavoriteTvShowsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,16 +42,16 @@ class FragmentFavoriteTvShows : BaseFragment() {
     }
 
     private fun setupUI() {
-        tvShowAdapter = TvShowAdapter { itemSelected: TvShowItem -> listTvShowClicked(itemSelected) }
+        tvShowAdapter = FavoriteTvShowsAdapter { itemSelected: TvShowItem -> listTvShowClicked(itemSelected) }
         recyclerViewFavorites.layoutManager = GridLayoutManager(activity, 2)
         recyclerViewFavorites.adapter = tvShowAdapter
         EspressoIdlingResource.increment()
         viewModel.getFavoriteTvShows()?.observe(this, Observer { response(it) })
     }
 
-    private fun response(result: List<TvShowItem>) {
+    private fun response(result: PagedList<TvShowItem>) {
         showData(result.isNotEmpty())
-        tvShowAdapter.setListTvShow(result)
+        tvShowAdapter.submitList(result)
     }
 
     private fun showData(isShow: Boolean) {

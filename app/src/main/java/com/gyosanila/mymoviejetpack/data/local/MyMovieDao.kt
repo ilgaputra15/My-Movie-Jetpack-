@@ -1,6 +1,7 @@
 package com.gyosanila.mymoviejetpack.data.local
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,7 +19,7 @@ import com.gyosanila.mymoviejetpack.data.model.TvShowItem
 interface MyMovieDao {
 
     @Query("SELECT * from movie_table ORDER BY id ASC")
-    fun getMoviesFavorites(): LiveData<List<MovieItem>>
+    fun getMoviesFavorites(): DataSource.Factory<Int, MovieItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(word: MovieItem)
@@ -35,7 +36,7 @@ interface MyMovieDao {
 
 
     @Query("SELECT * from tv_show_table ORDER BY id ASC")
-    fun getTvShowFavorites(): LiveData<List<TvShowItem>>
+    fun getTvShowFavorites(): DataSource.Factory<Int,TvShowItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTvShow(word: TvShowItem)

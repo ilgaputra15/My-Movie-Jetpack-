@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseFragment
 import com.gyosanila.mymoviejetpack.core.extension.visible
 import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
 import com.gyosanila.mymoviejetpack.data.model.MovieItem
-import com.gyosanila.mymoviejetpack.features.adapter.MovieAdapter
+import com.gyosanila.mymoviejetpack.features.adapter.FavoriteMoviesAdapter
 import com.gyosanila.mymoviejetpack.features.movieDetail.MovieDetailActivity
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -25,7 +26,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class FragmentFavoriteMovies : BaseFragment() {
 
     private val movieViewModel: FragmentFavoriteMoviesViewModel by viewModel()
-    private lateinit var movieAdapter: MovieAdapter
+    private lateinit var favoriteMoviesAdapter: FavoriteMoviesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,16 +42,16 @@ class FragmentFavoriteMovies : BaseFragment() {
     }
 
     private fun setupUI() {
-        movieAdapter = MovieAdapter { itemSelected: MovieItem -> listMovieClicked(itemSelected) }
+        favoriteMoviesAdapter = FavoriteMoviesAdapter { itemSelected: MovieItem -> listMovieClicked(itemSelected) }
         recyclerViewFavorites.layoutManager = LinearLayoutManager(activity)
-        recyclerViewFavorites.adapter = movieAdapter
+        recyclerViewFavorites.adapter = favoriteMoviesAdapter
         EspressoIdlingResource.increment()
         movieViewModel.getFavoriteMovies()?.observe(this, Observer { response(it) })
     }
 
-    private fun response(result: List<MovieItem>) {
+    private fun response(result: PagedList<MovieItem>) {
         showData(result.isNotEmpty())
-        movieAdapter.setListMovie(result)
+        favoriteMoviesAdapter.submitList(result)
     }
 
     private fun showData(isShow: Boolean) {
