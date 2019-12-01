@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseActivity
 import com.gyosanila.mymoviejetpack.core.common.Constant
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import com.gyosanila.mymoviejetpack.data.model.ResultResponse
 import com.gyosanila.mymoviejetpack.data.model.TvShowDetail
 import com.gyosanila.mymoviejetpack.data.model.TvShowItem
@@ -85,7 +85,7 @@ class TvShowDetailActivity : BaseActivity() {
     override fun setup() {
         tvShowItem = intent.getParcelableExtra(TV_SHOW)
         if (tvShowItem != null) {
-            EspressoIdlingResource.increment()
+            EspressoIdlingResourceTvShow.increment()
             tvShowViewModel.getMovieById(tvShowItem?.id ?: 0)?.observe(this, Observer { response(it) })
             tvShowViewModel.getFavoriteStatus(tvShowItem!!).observe(this, Observer { setFavorite(it) })
         } else finish()
@@ -113,7 +113,7 @@ class TvShowDetailActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     fun showTvShowDetail(tvShowDetail: TvShowDetail) {
-        EspressoIdlingResource.decrement()
+        EspressoIdlingResourceTvShow.decrement()
         textTitle.text = tvShowDetail.name
         Glide.with(this)
             .load(Constant.ImageUrl+tvShowDetail.poster_path)

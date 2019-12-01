@@ -13,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.gyosanila.mymoviejetpack.R
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import com.gyosanila.mymoviejetpack.features.dashboard.DashboardActivity
 import org.junit.After
 import org.junit.Before
@@ -35,13 +35,13 @@ class FragmentMovieTest {
 
     @Before
     fun setup() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.getEspressoIdlingResourceForMainActivity())
+        IdlingRegistry.getInstance().register(EspressoIdlingResourceTvShow.getEspressoIdlingResourceForMainActivity())
         onView(withText(R.string.text_title_movie)).perform(click())
     }
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getEspressoIdlingResourceForMainActivity())
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResourceTvShow.getEspressoIdlingResourceForMainActivity())
     }
 
     @Test

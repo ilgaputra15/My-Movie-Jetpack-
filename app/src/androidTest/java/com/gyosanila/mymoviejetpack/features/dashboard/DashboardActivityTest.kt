@@ -10,8 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.gyosanila.mymoviejetpack.R
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
-import com.gyosanila.mymoviejetpack.features.utils.RecyclerViewItemCountAssertion
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,12 +31,12 @@ class DashboardActivityTest {
 
     @Before
     fun setup() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.getEspressoIdlingResourceForMainActivity())
+        IdlingRegistry.getInstance().register(EspressoIdlingResourceTvShow.getEspressoIdlingResourceForMainActivity())
     }
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getEspressoIdlingResourceForMainActivity())
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResourceTvShow.getEspressoIdlingResourceForMainActivity())
     }
 
     @Test

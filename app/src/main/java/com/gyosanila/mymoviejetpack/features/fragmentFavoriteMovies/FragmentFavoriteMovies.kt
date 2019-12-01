@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseFragment
 import com.gyosanila.mymoviejetpack.core.extension.visible
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceMovie
 import com.gyosanila.mymoviejetpack.data.model.MovieItem
 import com.gyosanila.mymoviejetpack.features.adapter.FavoriteMoviesAdapter
 import com.gyosanila.mymoviejetpack.features.movieDetail.MovieDetailActivity
-import kotlinx.android.synthetic.main.fragment_favorites.*
+import kotlinx.android.synthetic.main.fragment_favorite_movies.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
@@ -33,7 +33,7 @@ class FragmentFavoriteMovies : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_favorites, container,false)
+        return inflater.inflate(R.layout.fragment_favorite_movies, container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,11 +45,15 @@ class FragmentFavoriteMovies : BaseFragment() {
         favoriteMoviesAdapter = FavoriteMoviesAdapter { itemSelected: MovieItem -> listMovieClicked(itemSelected) }
         recyclerViewFavorites.layoutManager = LinearLayoutManager(activity)
         recyclerViewFavorites.adapter = favoriteMoviesAdapter
-        EspressoIdlingResource.increment()
+//        if (!EspressoIdlingResourceTvShow.espressoTestIdlingResource.isIdleNow) {
+//            EspressoIdlingResourceTvShow.decrement()
+//        }
+        EspressoIdlingResourceMovie.increment()
         movieViewModel.getFavoriteMovies()?.observe(this, Observer { response(it) })
     }
 
     private fun response(result: PagedList<MovieItem>) {
+        EspressoIdlingResourceMovie.decrement()
         showData(result.isNotEmpty())
         favoriteMoviesAdapter.submitList(result)
     }

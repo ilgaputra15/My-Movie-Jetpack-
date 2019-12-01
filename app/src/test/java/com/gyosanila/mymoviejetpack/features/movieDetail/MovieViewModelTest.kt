@@ -6,13 +6,17 @@ import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.gyosanila.mymoviejetpack.data.model.MovieDetail
+import com.gyosanila.mymoviejetpack.data.model.MovieItem
 import com.gyosanila.mymoviejetpack.data.model.Movies
 import com.gyosanila.mymoviejetpack.data.model.ResultResponse
 import com.gyosanila.mymoviejetpack.data.repository.MovieRepository
 import com.gyosanila.mymoviejetpack.features.utils.JsonUtils
 import io.reactivex.Observable
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -75,6 +79,49 @@ class MovieViewModelTest {
         Mockito.`when`(movieRepository.getMovieDetail(movieId)).thenReturn(Observable.error(exception))
         viewModel.getMovieById(movieId)?.observeForever(observer)
         Mockito.verify(observer).onChanged(Mockito.refEq(response.value))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun saveFavorite() {
+        val responseString = JsonUtils.getJson("json/movie/movie_item.json")
+        val responseType = object : TypeToken<Movies>() {}.type
+        val dummyData: Movies = Gson().fromJson(responseString, responseType)
+        val response = MutableLiveData<MovieItem>()
+        response.value = dummyData.results[0]
+        runBlocking {
+            movieRepository.saveFavorite(dummyData.results[0])
+            Mockito.verify(movieRepository).saveFavorite(dummyData.results[0])
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun getFavoriteStatus() {
+        val responseString = JsonUtils.getJson("json/movie/movie_item.json")
+        val responseType = object : TypeToken<Movies>() {}.type
+        val dummyData: Movies = Gson().fromJson(responseString, responseType)
+        val response = MutableLiveData<MovieItem>()
+        response.value = dummyData.results[0]
+        runBlocking {
+            movieRepository.getFavorite(dummyData.results[0].id)
+            Mockito.`when`(movieRepository.getFavorite(dummyData.results[0].id)).thenReturn(response)
+            assertThat(response.value, equalTo(dummyData.results[0]) )
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun deleteFavorite() {
+        val responseString = JsonUtils.getJson("json/movie/movie_item.json")
+        val responseType = object : TypeToken<Movies>() {}.type
+        val dummyData: Movies = Gson().fromJson(responseString, responseType)
+        val response = MutableLiveData<MovieItem>()
+        response.value = dummyData.results[0]
+        runBlocking {
+            movieRepository.deleteFavorite(dummyData.results[0].id)
+            Mockito.verify(movieRepository).deleteFavorite(dummyData.results[0].id)
+        }
     }
 
 

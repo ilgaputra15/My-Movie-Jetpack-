@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseActivity
 import com.gyosanila.mymoviejetpack.core.common.Constant
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceMovie
 import com.gyosanila.mymoviejetpack.data.model.MovieDetail
 import com.gyosanila.mymoviejetpack.data.model.MovieItem
 import com.gyosanila.mymoviejetpack.data.model.ResultResponse
@@ -81,7 +81,7 @@ class MovieDetailActivity : BaseActivity() {
     private fun setupUI() {
         movieItem = intent.getParcelableExtra(MOVIE)
         if (movieItem == null) finish() else {
-            EspressoIdlingResource.increment()
+            EspressoIdlingResourceMovie.increment()
             movieViewModel.getMovieById(movieItem?.id ?: 0)?.observe(this, Observer { response(it) })
             movieViewModel.getFavoriteStatus(movieItem!!).observe(this, Observer { setFavorite(it) })
         }
@@ -93,7 +93,7 @@ class MovieDetailActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     fun showMovieDetail(movieDetail: MovieDetail) {
-        EspressoIdlingResource.decrement()
+        EspressoIdlingResourceMovie.decrement()
         textTitle.text = movieDetail.title
         Glide.with(this)
             .load(Constant.ImageUrl+movieDetail.poster_path)

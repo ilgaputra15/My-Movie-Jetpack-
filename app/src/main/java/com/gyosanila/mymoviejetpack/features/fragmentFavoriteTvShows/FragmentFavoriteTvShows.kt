@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseFragment
 import com.gyosanila.mymoviejetpack.core.extension.visible
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import com.gyosanila.mymoviejetpack.data.model.TvShowItem
 import com.gyosanila.mymoviejetpack.features.adapter.FavoriteTvShowsAdapter
 import com.gyosanila.mymoviejetpack.features.tvShowDetail.TvShowDetailActivity
-import kotlinx.android.synthetic.main.fragment_favorites.*
+import kotlinx.android.synthetic.main.fragment_favorite_tv_shows.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
@@ -33,7 +33,7 @@ class FragmentFavoriteTvShows : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_favorites, container,false)
+        return inflater.inflate(R.layout.fragment_favorite_tv_shows, container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,20 +43,21 @@ class FragmentFavoriteTvShows : BaseFragment() {
 
     private fun setupUI() {
         tvShowAdapter = FavoriteTvShowsAdapter { itemSelected: TvShowItem -> listTvShowClicked(itemSelected) }
-        recyclerViewFavorites.layoutManager = GridLayoutManager(activity, 2)
-        recyclerViewFavorites.adapter = tvShowAdapter
-        EspressoIdlingResource.increment()
+        recyclerViewFavoriteTvShows.layoutManager = GridLayoutManager(activity, 2)
+        recyclerViewFavoriteTvShows.adapter = tvShowAdapter
+        EspressoIdlingResourceTvShow.increment()
         viewModel.getFavoriteTvShows()?.observe(this, Observer { response(it) })
     }
 
     private fun response(result: PagedList<TvShowItem>) {
+        EspressoIdlingResourceTvShow.decrement()
         showData(result.isNotEmpty())
         tvShowAdapter.submitList(result)
     }
 
     private fun showData(isShow: Boolean) {
-        recyclerViewFavorites.visible = isShow
-        textViewNoData.visible = !isShow
+        recyclerViewFavoriteTvShows.visible = isShow
+        textViewNoDataTvShow.visible = !isShow
     }
 
     private fun listTvShowClicked(itemSelected: TvShowItem) {

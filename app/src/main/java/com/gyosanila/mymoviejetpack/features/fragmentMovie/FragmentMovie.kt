@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseFragment
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import com.gyosanila.mymoviejetpack.data.model.MovieItem
 import com.gyosanila.mymoviejetpack.data.model.Movies
 import com.gyosanila.mymoviejetpack.data.model.ResultResponse
@@ -45,7 +45,7 @@ class FragmentMovie : BaseFragment() {
         movieAdapter = MovieAdapter { itemSelected: MovieItem -> listMovieClicked(itemSelected) }
         recyclerViewMovie.layoutManager = LinearLayoutManager(activity)
         recyclerViewMovie.adapter = movieAdapter
-        EspressoIdlingResource.increment()
+        EspressoIdlingResourceTvShow.increment()
         movieViewModel.getListMovie()?.observe(this, Observer { response(it) })
     }
 
@@ -58,7 +58,7 @@ class FragmentMovie : BaseFragment() {
                 hideDialog()
                 when(result.data) {
                     is Movies -> {
-                        EspressoIdlingResource.decrement()
+                        EspressoIdlingResourceTvShow.decrement()
                         movieAdapter.setListMovie(result.data.results)
                     }
                 }

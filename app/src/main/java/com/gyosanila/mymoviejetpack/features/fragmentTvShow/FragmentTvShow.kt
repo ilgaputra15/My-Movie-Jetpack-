@@ -5,18 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gyosanila.mymoviejetpack.R
 import com.gyosanila.mymoviejetpack.core.base.BaseFragment
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import com.gyosanila.mymoviejetpack.data.model.ResultResponse
 import com.gyosanila.mymoviejetpack.data.model.TvShowItem
 import com.gyosanila.mymoviejetpack.data.model.TvShows
 import com.gyosanila.mymoviejetpack.features.adapter.TvShowAdapter
 import com.gyosanila.mymoviejetpack.features.tvShowDetail.TvShowDetailActivity
 import kotlinx.android.synthetic.main.fragment_tv_show.*
-import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
@@ -47,7 +45,7 @@ class FragmentTvShow : BaseFragment() {
         tvShowAdapter = TvShowAdapter { itemSelected: TvShowItem -> listTvShowClicked(itemSelected) }
         recyclerViewTvShow.layoutManager = GridLayoutManager(activity, 2)
         recyclerViewTvShow.adapter = tvShowAdapter
-        EspressoIdlingResource.increment()
+        EspressoIdlingResourceTvShow.increment()
         viewModel.getTvShows()?.observe(this, Observer { response(it) })
     }
 
@@ -60,7 +58,7 @@ class FragmentTvShow : BaseFragment() {
                 hideDialog()
                 when(result.data) {
                     is TvShows -> {
-                        EspressoIdlingResource.decrement()
+                        EspressoIdlingResourceTvShow.decrement()
                         tvShowAdapter.setListTvShow(result.data.results)
                     }
                 }
