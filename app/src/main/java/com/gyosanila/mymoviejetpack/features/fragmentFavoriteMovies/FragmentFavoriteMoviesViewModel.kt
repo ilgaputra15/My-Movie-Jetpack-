@@ -20,7 +20,7 @@ class FragmentFavoriteMoviesViewModel(private val movieRepository: MovieReposito
 
     fun getFavoriteMovies(): LiveData<PagedList<MovieItem>>? {
         if (response == null) {
-            response = LivePagedListBuilder(movieRepository.getFavoriteMovies(), 5).build()
+            response = movieRepository.getFavoriteMovies(10)
         }
         return response
     }

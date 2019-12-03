@@ -2,6 +2,8 @@ package com.gyosanila.mymoviejetpack.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.gyosanila.mymoviejetpack.core.common.Constant
 import com.gyosanila.mymoviejetpack.core.utils.RxUtils
 import com.gyosanila.mymoviejetpack.data.local.MyMovieDao
@@ -38,7 +40,7 @@ class MovieRepository(private val movieApi: MovieServices, private val myMovieDa
         myMovieDao.deleteMovieById(movieId)
     }
 
-    fun getFavoriteMovies(): DataSource.Factory<Int, MovieItem> {
-        return myMovieDao.getMoviesFavorites()
+    fun getFavoriteMovies(pageSize: Int): LiveData<PagedList<MovieItem>> {
+        return LivePagedListBuilder(myMovieDao.getMoviesFavorites(), pageSize).build()
     }
 }

@@ -2,7 +2,6 @@ package com.gyosanila.mymoviejetpack.features.fragmentFavoriteTvShows
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.gyosanila.mymoviejetpack.data.model.TvShowItem
 import com.gyosanila.mymoviejetpack.data.repository.TvShowRepository
@@ -19,7 +18,7 @@ class FragmentFavoriteTvShowsViewModel(private val tvShowRepository: TvShowRepos
 
     fun getFavoriteTvShows(): LiveData<PagedList<TvShowItem>>? {
         if (response == null) {
-            response = LivePagedListBuilder(tvShowRepository.getFavoriteTvShows(), 5).build()
+            response = tvShowRepository.getFavoriteTvShows(10)
         }
         return response
     }
