@@ -31,6 +31,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".features.tvShowDetail.TvShowDetailActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".features.favorites.FavoritesActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

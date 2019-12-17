@@ -3,13 +3,14 @@ package com.gyosanila.mymoviejetpack.features.tvShowDetail
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.gyosanila.mymoviejetpack.R
-import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResource
+import com.gyosanila.mymoviejetpack.core.utils.EspressoIdlingResourceTvShow
 import com.gyosanila.mymoviejetpack.data.model.TvShowItem
 import com.gyosanila.mymoviejetpack.features.utils.FakeDataDummy
 import org.junit.After
@@ -32,7 +33,7 @@ class TvShowDetailActivityTest {
 
     @Before
     fun setUp() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.getEspressoIdlingResourceForMainActivity())
+        IdlingRegistry.getInstance().register(EspressoIdlingResourceTvShow.getEspressoIdlingResourceForMainActivity())
         val intent = Intent()
         intent.putExtra(TvShowDetailActivity.TV_SHOW, dummyTvShow)
         activityRule.launchActivity(intent)
@@ -40,7 +41,7 @@ class TvShowDetailActivityTest {
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getEspressoIdlingResourceForMainActivity())
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResourceTvShow.getEspressoIdlingResourceForMainActivity())
     }
 
     @Test
@@ -53,4 +54,11 @@ class TvShowDetailActivityTest {
         onView(withId(R.id.textValuePopularity)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         onView(withId(R.id.textValueVoteAverage)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
+
+    @Test
+    fun selectFavorite() {
+        onView(withId(R.id.action_add_favorite)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.action_add_favorite)).perform(ViewActions.click())
+    }
+
 }

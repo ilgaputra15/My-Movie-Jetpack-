@@ -35,4 +35,14 @@
 
     <include layout="@layout/content_dashboard"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_favorite_active"
+        android:focusable="true" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.gyosanila.mymoviejetpack.data.model
 
 import android.os.Parcelable
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
@@ -20,6 +21,7 @@ data class Movies(
 )
 
 @Parcelize
+@Entity(tableName = "movie_table")
 data class MovieItem(
     @Json(name = "vote_count") val vote_count: Int,
     @PrimaryKey @Json(name = "id") val id: Int,

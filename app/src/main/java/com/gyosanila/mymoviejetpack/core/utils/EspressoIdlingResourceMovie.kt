@@ -10,8 +10,8 @@ import androidx.test.espresso.idling.CountingIdlingResource
  * on Friday, 22/11/2019 21:43
  * Division Mobile - PT.Homecareindo Global Medika
  **/
-object EspressoIdlingResource {
-    private const val RESOURCE = "GLOBAL"
+object EspressoIdlingResourceMovie {
+    private const val RESOURCE = "GLOBAL2"
     private val espressoTestIdlingResource = CountingIdlingResource(RESOURCE)
 
     fun increment() {
